@@ -1,93 +1,83 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+void heapify(int*,int, int);
+void heapsort(int*, int);
+void print_array(int*, int);
  
-// Merges two subarrays of arr[].
-// First subarray is arr[l..m]
-// Second subarray is arr[m+1..r]
-void merge(int arr[], int l, int m, int r)
-{
-    int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = r - m;
- 
-    // Create temp arrays
-    int L[n1], R[n2];
- 
-    // Copy data to temp arrays L[] and R[]
-    for (i = 0; i < n1; i++)
-        L[i] = arr[l + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
- 
-    // Merge the temp arrays back into arr[l..r
-    i = 0;
-    j = 0;
-    k = l;
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) {
-            arr[k] = L[i];
-            i++;
-        }
-        else {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
-    }
- 
-    // Copy the remaining elements of L[],
-    // if there are any
-    while (i < n1) {
-        arr[k] = L[i];
-        i++;
-        k++;
-    }
- 
-    // Copy the remaining elements of R[],
-    // if there are any
-    while (j < n2) {
-        arr[k] = R[j];
-        j++;
-        k++;
-    }
-}
- 
-// l is for left index and r is right index of the
-// sub-array of arr to be sorted
-void mergeSort(int arr[], int l, int r)
-{
-    if (l < r) {
-        int m = l + (r - l) / 2;
- 
-        // Sort first and second halves
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, r);
- 
-        merge(arr, l, m, r);
-    }
-}
- 
-// Function to print an array
-void printArray(int A[], int size)
-{
-    int i;
-    for (i = 0; i < size; i++)
-        printf("%d ", A[i]);
-    printf("\n");
-}
- 
-// Driver code
 int main()
 {
-    int arr[] = { 12, 11, 13, 5, 6, 7 };
-    int arr_size = sizeof(arr) / sizeof(arr[0]);
+    int arr[] = { 10, 30, 5, 63, 22, 12, 56, 33 };
+    int n = sizeof(arr) / sizeof(arr[0]);
  
-    printf("Given array is \n");
-    printArray(arr, arr_size);
+    printf("\nArray before sorting:\n");
+    print_array(arr, n);
  
-    mergeSort(arr, 0, arr_size - 1);
+    heapsort(arr, n);
  
-    printf("\nSorted array is \n");
-    printArray(arr, arr_size);
+    printf("\n\nArray after sorting:\n");
+    print_array(arr, n);
+ 
     return 0;
+}
+ 
+/* sorts the given array of n size */
+void heapsort(int* arr, int n)
+{
+    // build the binary max heap
+    for (int i = n / 2 - 1; i >= 0; i--)
+    {
+        heapify(arr, n, i);
+    }
+ 
+    // sort the max heap
+    for (int i = n - 1; i >= 0; i--)
+    {
+        // swap the root node and the last leaf node
+        int temp = arr[i];
+        arr[i] = arr[0];
+        arr[0] = temp;
+ 
+        // again heapify the max heap from the root 
+        heapify(arr, i, 0);
+    }
+}
+ 
+/* heapify the subtree with root i */
+void heapify(int* arr, int n, int i)
+{
+    // store largest as the root element
+    int largest = i;
+ 
+    int left = 2 * i + 1;
+    int right  = 2 * i + 2;
+ 
+    // now check whether the right and left right is larger than the root or not
+    if (left < n && arr[left] > arr[largest])
+    {
+        largest = left;
+    }
+ 
+    if (right < n && arr[right] > arr[largest])
+    {
+        largest = right;
+    }
+ 
+    // if the root is smaller than the children then swap it with the largest children's value
+    if (largest != i)
+    {
+        int temp = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = temp;
+ 
+        // again heapify that side of the heap where the root has gone
+        heapify(arr, n, largest);
+    }
+}
+ 
+/* printf the array */
+void print_array(int* arr, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d  ", arr[i]);
+    }
 }
